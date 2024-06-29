@@ -9,6 +9,8 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
+    private var gradientLayers: [CAGradientLayer] = []
+    
     private let logoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "starluxIcon")
@@ -55,6 +57,7 @@ class HomeViewController: UIViewController {
         let button = UIButton(configuration: configuration)
         button.tintColor = UIColor(red: 231/255, green: 193/255, blue: 138/255, alpha: 1)
         button.setTitleColor(UIColor.gray, for: .normal)
+        button.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
         
         return button
     }
@@ -84,7 +87,7 @@ class HomeViewController: UIViewController {
         return view
     }()
     
-    private let advertiseImageView: [UIImageView] = {
+    private var advertiseImageView: [UIImageView] = {
         var imageViews: [UIImageView] = []
         
         for i in 1...6 {
@@ -93,6 +96,11 @@ class HomeViewController: UIViewController {
             imageView.image = UIImage(named: i.description)
             imageView.clipsToBounds = true
             imageView.translatesAutoresizingMaskIntoConstraints = false
+            
+            let gradientLayer = CAGradientLayer()
+            gradientLayer.colors = [UIColor.black.withAlphaComponent(0.5).cgColor, UIColor.clear.cgColor]
+            gradientLayer.locations = [0.0, 1.0]
+            imageView.layer.addSublayer(gradientLayer)
             imageViews.append(imageView)
         }
         return imageViews
@@ -105,6 +113,7 @@ class HomeViewController: UIViewController {
         pageControl.currentPage = 0
         pageControl.pageIndicatorTintColor = UIColor.lightGray
         pageControl.currentPageIndicatorTintColor = UIColor.systemYellow
+        pageControl.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
         return pageControl
     }()
     
@@ -116,8 +125,27 @@ class HomeViewController: UIViewController {
         return view
     }()
     
+    private let journeyButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("即刻預定", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = UIColor(red: 69/255, green: 50/255, blue: 77/255, alpha: 1)
+        button.layer.masksToBounds = false
+        button.layer.cornerRadius = 13
+        return button
+    }()
     
-
+    private let contentLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "與星宇一起旅行"
+        label.textColor = .white.withAlphaComponent(0.8)
+        label.font = .systemFont(ofSize: 30, weight: .light)
+        label.textAlignment = .right
+        return label
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor(red: 25/255, green: 44/255, blue: 60/255, alpha: 1)
@@ -128,14 +156,25 @@ class HomeViewController: UIViewController {
         view.addSubview(sectionStack)
         view.addSubview(pageImageScrollView)
         pageImageScrollView.addSubview(contentView)
+        view.addSubview(announcementBarView)
+        view.addSubview(pageImageControl)
+        view.addSubview(journeyButton)
+        view.addSubview(contentLabel)
+        
+        pageImageScrollView.delegate = self
         
         configureUI()
         configureStackButton()
+        
+        journeyButton.addTarget(self, action: #selector(didIntoJourney), for: .touchUpInside)
+        pageImageControl.addTarget(self, action: #selector(pageControlChanged(_:)), for: .valueChanged)
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        advertiseGradient()
+        for (index, imageView) in advertiseImageView.enumerated() {
+            gradientLayers[index].frame = imageView.bounds
+        }
     }
     
     private func configureStackButton() {
@@ -144,6 +183,17 @@ class HomeViewController: UIViewController {
             button.tag = i
             button.addTarget(self, action: #selector(didTapTab(_:)), for: .touchUpInside)
         }
+    }
+    
+    @objc private func pageControlChanged(_ sender: UIPageControl) {
+        let currentPage = sender.currentPage
+        let offsetX = CGFloat(currentPage) * pageImageScrollView.bounds.size.width
+        pageImageScrollView.setContentOffset(CGPoint(x: offsetX, y: 0), animated: true)
+    }
+    
+    @objc private func didIntoJourney() {
+        let journeyVC = JourneyViewController()
+        navigationController?.pushViewController(journeyVC, animated: true)
     }
     
     @objc private func didTapTab(_ sender: UIButton) {
@@ -157,19 +207,6 @@ class HomeViewController: UIViewController {
             }
         default:
             print("Home")
-        }
-    }
-    
-    private func advertiseGradient() {
-        for i in 0...5 {
-            let gradientLayer = CAGradientLayer()
-            gradientLayer.colors = [
-                UIColor.systemBackground.withAlphaComponent(0.5).cgColor,
-                UIColor.clear.cgColor,
-            ]
-            gradientLayer.locations = [0.0, 1.0]
-            gradientLayer.frame = advertiseImageView[i].bounds
-            advertiseImageView[i].layer.addSublayer(gradientLayer)
         }
     }
     
@@ -194,8 +231,8 @@ class HomeViewController: UIViewController {
             loginRegisterButton.bottomAnchor.constraint(equalTo: barView.bottomAnchor),
             
             sectionStack.topAnchor.constraint(equalTo: barView.bottomAnchor),
-            sectionStack.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            sectionStack.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            sectionStack.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
+            sectionStack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
             sectionStack.heightAnchor.constraint(equalToConstant: 100),
             
             pageImageScrollView.topAnchor.constraint(equalTo: sectionStack.bottomAnchor),
@@ -210,10 +247,32 @@ class HomeViewController: UIViewController {
             contentView.heightAnchor.constraint(equalTo: pageImageScrollView.heightAnchor),
             contentView.widthAnchor.constraint(equalTo: pageImageScrollView.widthAnchor, multiplier: 6),
             
+            announcementBarView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            announcementBarView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            announcementBarView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            announcementBarView.heightAnchor.constraint(equalToConstant: 50),
+
+            pageImageControl.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -50),
+            pageImageControl.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            pageImageControl.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            pageImageControl.heightAnchor.constraint(equalToConstant: 50),
+            
+            journeyButton.bottomAnchor.constraint(equalTo: pageImageControl.topAnchor),
+            journeyButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            journeyButton.widthAnchor.constraint(equalToConstant: 110),
+            journeyButton.heightAnchor.constraint(equalToConstant: 26),
+            
+            contentLabel.bottomAnchor.constraint(equalTo: journeyButton.topAnchor),
+            contentLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
+            contentLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            contentLabel.heightAnchor.constraint(equalToConstant: 60),
         ])
         
-        for i in 0...5 {
-            contentView.addSubview(advertiseImageView[i])
+        for imageView in advertiseImageView {
+            contentView.addSubview(imageView)
+            if let gradientLayer = imageView.layer.sublayers?.compactMap({ $0 as? CAGradientLayer }).first {
+                gradientLayers.append(gradientLayer)
+            }
         }
         
         NSLayoutConstraint.activate([
@@ -253,9 +312,13 @@ class HomeViewController: UIViewController {
             advertiseImageView[5].heightAnchor.constraint(equalTo: contentView.heightAnchor),
             advertiseImageView[5].widthAnchor.constraint(equalTo: view.widthAnchor),
         ])
-        
     }
+}
 
-
+extension HomeViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let page = Int(scrollView.contentOffset.x / scrollView.bounds.width)
+        pageImageControl.currentPage = page
+    }
 }
 
