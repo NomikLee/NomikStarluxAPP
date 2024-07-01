@@ -37,6 +37,7 @@ class TabBarViewController: UITabBarController {
         nav5.tabBarItem.image = UIImage(systemName: "ellipsis.bubble.fill")
         
         UITabBar.appearance().tintColor = UIColor(red: 231/255, green: 193/255, blue: 138/255, alpha: 1)
+        UINavigationBar.appearance().tintColor = UIColor(red: 231/255, green: 193/255, blue: 138/255, alpha: 1)
         
         setViewControllers([nav1, nav2, nav3, nav4, nav5], animated: true)
         

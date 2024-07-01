@@ -9,8 +9,11 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
+    // MARK: - Variables
     private var gradientLayers: [CAGradientLayer] = []
+    private let buttonData = [("預訂行程", "airplane.circle"), ("線上報到", "checkmark.circle"), ("加入行程", "plus.circle")]
     
+    // MARK: - UI Components
     private let logoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "starluxIcon")
@@ -29,7 +32,7 @@ class HomeViewController: UIViewController {
     private let helloNameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Hello! 芫豪"
+        label.text = "Hello!"
         label.font = .systemFont(ofSize: 15, weight: .bold)
         label.textAlignment = .center
         label.textColor = .lightGray
@@ -45,7 +48,6 @@ class HomeViewController: UIViewController {
         return button
     }()
     
-    private let buttonData = [("預訂行程", "airplane.circle"), ("線上報到", "checkmark.circle"), ("加入行程", "plus.circle")]
     private lazy var stackButtons: [UIButton] = buttonData.map{ (titles, images) in
         
         var configuration = UIButton.Configuration.plain()
@@ -77,6 +79,7 @@ class HomeViewController: UIViewController {
         scrollView.isPagingEnabled = true
         scrollView.isScrollEnabled = true
         scrollView.isDirectionalLockEnabled = false
+        scrollView.showsHorizontalScrollIndicator = false
         return scrollView
     }()
     
@@ -125,6 +128,30 @@ class HomeViewController: UIViewController {
         return view
     }()
     
+    private let barExclamationImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFit
+        imageView.image = UIImage(systemName: "exclamationmark.circle.fill")?.withTintColor(.red, renderingMode: .alwaysOriginal)
+        return imageView
+    }()
+    
+    private let barAnnouncementLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "完整布局港澳航線， 7月16日香港盛大開航！"
+        return label
+    }()
+    
+    private let barDeleteButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setImage(UIImage(systemName: "multiply"), for: .normal)
+        button.tintColor = .white
+        button.transform = CGAffineTransform(scaleX: 1.8, y: 1.8)
+        return button
+    }()
+    
     private let journeyButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -146,6 +173,8 @@ class HomeViewController: UIViewController {
         return label
     }()
     
+    
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor(red: 25/255, green: 44/255, blue: 60/255, alpha: 1)
@@ -157,6 +186,9 @@ class HomeViewController: UIViewController {
         view.addSubview(pageImageScrollView)
         pageImageScrollView.addSubview(contentView)
         view.addSubview(announcementBarView)
+        announcementBarView.addSubview(barExclamationImageView)
+        announcementBarView.addSubview(barAnnouncementLabel)
+        announcementBarView.addSubview(barDeleteButton)
         view.addSubview(pageImageControl)
         view.addSubview(journeyButton)
         view.addSubview(contentLabel)
@@ -165,9 +197,8 @@ class HomeViewController: UIViewController {
         
         configureUI()
         configureStackButton()
+        configureButtonTarget()
         
-        journeyButton.addTarget(self, action: #selector(didIntoJourney), for: .touchUpInside)
-        pageImageControl.addTarget(self, action: #selector(pageControlChanged(_:)), for: .valueChanged)
     }
     
     override func viewDidLayoutSubviews() {
@@ -177,12 +208,30 @@ class HomeViewController: UIViewController {
         }
     }
     
+    // MARK: - Functions
     private func configureStackButton() {
         for (i, button) in sectionStack.arrangedSubviews.enumerated() {
             guard let button = button as? UIButton else { return }
             button.tag = i
             button.addTarget(self, action: #selector(didTapTab(_:)), for: .touchUpInside)
         }
+    }
+    
+    private func configureButtonTarget() {
+        journeyButton.addTarget(self, action: #selector(didIntoJourney), for: .touchUpInside)
+        pageImageControl.addTarget(self, action: #selector(pageControlChanged(_:)), for: .valueChanged)
+        barDeleteButton.addTarget(self, action: #selector(didBarDelete), for: .touchUpInside)
+        loginRegisterButton.addTarget(self, action: #selector(didTabLoginRegister), for: .touchUpInside)
+    }
+    
+    // MARK: - Selectors
+    @objc private func didTabLoginRegister() {
+        let vc = CosmileViewController()
+        navigationController?.pushViewController(vc, animated: false)
+    }
+    
+    @objc private func didBarDelete() {
+        announcementBarView.isHidden = true
     }
     
     @objc private func pageControlChanged(_ sender: UIPageControl) {
@@ -210,6 +259,7 @@ class HomeViewController: UIViewController {
         }
     }
     
+    // MARK: - UI Setup
     private func configureUI() {
         NSLayoutConstraint.activate([
             logoImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 50),
@@ -250,9 +300,24 @@ class HomeViewController: UIViewController {
             announcementBarView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             announcementBarView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             announcementBarView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            announcementBarView.heightAnchor.constraint(equalToConstant: 50),
+            announcementBarView.heightAnchor.constraint(equalToConstant: 45),
+            
+            barAnnouncementLabel.topAnchor.constraint(equalTo: announcementBarView.topAnchor),
+            barAnnouncementLabel.bottomAnchor.constraint(equalTo: announcementBarView.bottomAnchor),
+            barAnnouncementLabel.centerXAnchor.constraint(equalTo: announcementBarView.centerXAnchor),
+            barAnnouncementLabel.widthAnchor.constraint(equalToConstant: 270),
+            
+            barExclamationImageView.topAnchor.constraint(equalTo: announcementBarView.topAnchor, constant: 1),
+            barExclamationImageView.bottomAnchor.constraint(equalTo: announcementBarView.bottomAnchor, constant: -1),
+            barExclamationImageView.trailingAnchor.constraint(equalTo: barAnnouncementLabel.leadingAnchor, constant: -5),
+            barExclamationImageView.widthAnchor.constraint(equalToConstant: 25),
+            
+            barDeleteButton.topAnchor.constraint(equalTo: announcementBarView.topAnchor),
+            barDeleteButton.bottomAnchor.constraint(equalTo: announcementBarView.bottomAnchor),
+            barDeleteButton.leadingAnchor.constraint(equalTo: barAnnouncementLabel.trailingAnchor),
+            barDeleteButton.widthAnchor.constraint(equalToConstant: 40),
 
-            pageImageControl.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -50),
+            pageImageControl.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -35),
             pageImageControl.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             pageImageControl.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             pageImageControl.heightAnchor.constraint(equalToConstant: 50),
@@ -315,10 +380,11 @@ class HomeViewController: UIViewController {
     }
 }
 
+// MARK: - Extension
 extension HomeViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let page = Int(scrollView.contentOffset.x / scrollView.bounds.width)
-        pageImageControl.currentPage = page
+        let page = scrollView.contentOffset.x / scrollView.bounds.width
+        pageImageControl.currentPage = Int(page)
     }
 }
 

@@ -22,6 +22,10 @@
 		6F1F1F252C2BF82000C4ECB5 /* ManageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1F1F242C2BF82000C4ECB5 /* ManageViewController.swift */; };
 		6F1F1F272C2BF85A00C4ECB5 /* MoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1F1F262C2BF85A00C4ECB5 /* MoreViewController.swift */; };
 		6F1F1F2A2C2C090700C4ECB5 /* IntoBackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1F1F292C2C090700C4ECB5 /* IntoBackViewController.swift */; };
+		6F70EB412C312549001649FF /* LoginRegisterMainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F70EB402C312549001649FF /* LoginRegisterMainViewController.swift */; };
+		6F70EB432C31318C001649FF /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F70EB422C31318C001649FF /* LoginViewController.swift */; };
+		6F70EB452C3131A2001649FF /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F70EB442C3131A2001649FF /* RegisterViewController.swift */; };
+		6F70EB492C3133AD001649FF /* dddViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F70EB482C3133AD001649FF /* dddViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +65,10 @@
 		6F1F1F242C2BF82000C4ECB5 /* ManageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageViewController.swift; sourceTree = "<group>"; };
 		6F1F1F262C2BF85A00C4ECB5 /* MoreViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreViewController.swift; sourceTree = "<group>"; };
 		6F1F1F292C2C090700C4ECB5 /* IntoBackViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntoBackViewController.swift; sourceTree = "<group>"; };
+		6F70EB402C312549001649FF /* LoginRegisterMainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginRegisterMainViewController.swift; sourceTree = "<group>"; };
+		6F70EB422C31318C001649FF /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		6F70EB442C3131A2001649FF /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
+		6F70EB482C3133AD001649FF /* dddViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = dddViewController.swift; path = NomikStarluxAPP/Controllers/dddViewController.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -153,6 +161,7 @@
 		6F1F1F182C2BF13A00C4ECB5 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				6F70EB482C3133AD001649FF /* dddViewController.swift */,
 				6F1F1F2B2C2E5CBF00C4ECB5 /* Supporting */,
 				6F1F1F282C2C08AA00C4ECB5 /* Onboarding */,
 				6F1F1F1C2C2BF1EA00C4ECB5 /* TabBarViewController.swift */,
@@ -190,6 +199,9 @@
 			isa = PBXGroup;
 			children = (
 				6F1F1F292C2C090700C4ECB5 /* IntoBackViewController.swift */,
+				6F70EB402C312549001649FF /* LoginRegisterMainViewController.swift */,
+				6F70EB422C31318C001649FF /* LoginViewController.swift */,
+				6F70EB442C3131A2001649FF /* RegisterViewController.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -331,14 +343,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6F70EB432C31318C001649FF /* LoginViewController.swift in Sources */,
 				6F1F1F272C2BF85A00C4ECB5 /* MoreViewController.swift in Sources */,
 				6F1F1EE92C2BF06F00C4ECB5 /* HomeViewController.swift in Sources */,
 				6F1F1F232C2BF7D900C4ECB5 /* CosmileViewController.swift in Sources */,
+				6F70EB412C312549001649FF /* LoginRegisterMainViewController.swift in Sources */,
+				6F70EB492C3133AD001649FF /* dddViewController.swift in Sources */,
 				6F1F1EE52C2BF06F00C4ECB5 /* AppDelegate.swift in Sources */,
 				6F1F1EEF2C2BF06F00C4ECB5 /* NomikStarluxAPP.xcdatamodeld in Sources */,
 				6F1F1F2A2C2C090700C4ECB5 /* IntoBackViewController.swift in Sources */,
 				6F1F1F1D2C2BF1EA00C4ECB5 /* TabBarViewController.swift in Sources */,
 				6F1F1F252C2BF82000C4ECB5 /* ManageViewController.swift in Sources */,
+				6F70EB452C3131A2001649FF /* RegisterViewController.swift in Sources */,
 				6F1F1EE72C2BF06F00C4ECB5 /* SceneDelegate.swift in Sources */,
 				6F1F1F212C2BF79300C4ECB5 /* JourneyViewController.swift in Sources */,
 			);
